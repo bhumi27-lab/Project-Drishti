@@ -1,26 +1,40 @@
-import { motion } from 'framer-motion'
-import { Eye } from 'lucide-react'
+import { Eye, Gauge, Search, Shield } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { Hero } from '@/features/landing/Hero'
 
-// Placeholder. The hero PipelineScene lands in Phase 1 (components/animation).
+// The four scroll sections replace the #how strip later in Phase 1.
+const stages = [
+  { icon: Eye, name: 'Watcher', verb: 'SEE' },
+  { icon: Search, name: 'Detective', verb: 'UNDERSTAND' },
+  { icon: Gauge, name: 'Gate', verb: 'DECIDE' },
+  { icon: Shield, name: 'Bouncer', verb: 'DEFEND' },
+]
+
 export default function Landing() {
   return (
-    <main className="grid min-h-screen place-items-center p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center"
-      >
-        <Eye className="mx-auto size-10 text-primary-glow" />
-        <h1 className="mt-4 text-5xl font-semibold tracking-tight">Drishti</h1>
-        <p className="mt-2 text-text-muted">The AI That Fights Back.</p>
-        <Link to="/dashboard" className={cn(buttonVariants(), 'mt-8')}>
-          Open Dashboard
+    <div className="min-h-screen">
+      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
+        <Link to="/" className="flex items-center gap-2 font-medium text-text">
+          <Eye className="size-5 text-primary-glow" />
+          Drishti
         </Link>
-      </motion.div>
-    </main>
+        <Link to="/dashboard" className="text-sm text-text-muted transition-colors hover:text-text">
+          Dashboard
+        </Link>
+      </header>
+
+      <main>
+        <Hero />
+        <section id="how" className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-3 px-6 pb-24 sm:grid-cols-4">
+          {stages.map(({ icon: Icon, name, verb }) => (
+            <div key={name} className="rounded-2xl border border-border/70 bg-card/40 p-4">
+              <Icon className="size-5 text-primary-glow" />
+              <p className="mt-3 text-sm text-text">{name}</p>
+              <p className="font-mono text-[11px] tracking-widest text-text-muted">{verb}</p>
+            </div>
+          ))}
+        </section>
+      </main>
+    </div>
   )
 }

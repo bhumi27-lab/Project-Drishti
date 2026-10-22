@@ -189,14 +189,14 @@ Don't use flat black. Add subtle cerulean radial glows, a faint grid or noise te
 **Below the hero:** four scroll sections, one per stage. The illustration alternates left/right, with 1–2 lines of description on the other side, revealed on scroll.
 **Footer:** team names, college, year.
 
-#### PipelineScene animation spec (≈10 s loop, SVG + Framer Motion)
-1. Log lines (monospace, dim cerulean) flow left → right like a conveyor.
-2. **Watcher eye** sweeps a beam across them. Normal logs pass and fade. One log turns **neon rose**, the eye locks on, and the log is *snipped* out into a packet card.
-3. The packet travels along a glowing path to **Detective**. A tag pops up: `T1110 · Brute Force`.
-4. **Confidence Gate** dial fills to **92%** and turns green.
-5. **Bouncer** raises its shield. The packet hits it, bounces off, and gets stamped **BLOCKED**, with a small shake.
-6. **Every 3rd loop:** the dial stops at **64%** and the packet goes to a small **human analyst** icon instead (controlled autonomy).
-7. Under each stage: `SEE · UNDERSTAND · DECIDE · DEFEND`.
+#### PipelineScene: "The Watching Railway" (11 s loop, SVG, `components/animation/pipeline/`)
+A toy railway seen from above. Log carriages circle a track loop around one large eye on a signal tower.
+1. **Watcher:** the eye idly follows carriages, then one carriage blushes **neon rose**. The pupil tightens, the iris fibres turn, and a dotted line of sight locks onto it.
+2. **Detective:** a round bird with a loupe flies from its perch, rides the rogue carriage, and a `T1110` tag pops up.
+3. **Confidence Gate:** a ring dial fills to **92** (green), and the track switch throws so the rogue rolls onto a spur.
+4. **Bouncer:** a stern buffer stop with a spring. The carriage hits it, bounces, shakes and dissolves into rose sparks. The eye blinks.
+5. **Every 3rd loop:** the dial stops at **64** (amber). The carriage halts at a platform, the dozing analyst wakes and approves with a check, and only then does it roll on to the Bouncer.
+The scene is a pure function of loop time (`timeline.ts`). Reduced motion shows a single still frame. In dev, `?t=6.3&loop=2` freezes any frame.
 
 ### 6.2 Dashboard (`/dashboard`)
 - 4 stat tiles: Logs processed · Threats detected · Auto-blocked · Awaiting approval
@@ -345,9 +345,9 @@ The frontend `types/` must mirror these schemas exactly.
 - [x] README rewritten
 
 ### Phase 1 — Design system + Landing page
-- [ ] Color tokens + fonts + background glow/grid
+- [x] Color tokens + fonts + background glow/grid
 - [ ] Layout primitives (PageShell, Sidebar, Topbar)
-- [ ] **PipelineScene** hero animation (section 6.1 spec)
+- [x] **PipelineScene** hero animation (section 6.1 spec)
 - [ ] Four agent scroll sections (alternating left/right)
 - [ ] Footer
 - [ ] Reduced-motion + mobile check
@@ -493,3 +493,4 @@ Larger local models · more knowledge sources (CVE, threat intel feeds) · advan
 |---|---|---|
 | 2026-10-22 | — | Master plan created |
 | 2026-10-22 | 0 | Monorepo skeleton: frontend (Vite/Tailwind v4/shadcn/Router), backend (/health), compose, docs, CLAUDE.md |
+| 2026-10-22 | 1 | Hero + PipelineScene ("Watching Railway": Iris eye + toy railway), glow token, MotionConfig reduced motion |
