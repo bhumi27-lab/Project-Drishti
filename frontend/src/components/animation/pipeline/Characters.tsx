@@ -1,74 +1,73 @@
 import { useId } from 'react'
 import { ANALYST, BIRD_HOME, BUFFER, EYE } from './track'
 
+// Characters draw around their own origin so the hero scene and the app's
+// agent glyphs (components/agents) share one set of drawings.
+
 const lerp = (a: number, b: number, p: number) => a + (b - a) * p
 
-interface EyeProps {
-  dx: number
-  dy: number
-  pupil: number
-  blink: number
-  lock: number
+export interface EyeProps {
+  dx?: number
+  dy?: number
+  pupil?: number
+  blink?: number
+  lock?: number
 }
 
-/** Watcher: the eye that keeps watch, on a signal tower in the middle of the loop. */
-export function WatcherEye({ dx, dy, pupil, blink, lock }: EyeProps) {
-  const uid = useId().replace(/[^a-zA-Z0-9]/g, '')
-  const { x, y } = EYE
-  const almond = `M${x - 32} ${y} Q${x} ${y - 26} ${x + 32} ${y} Q${x} ${y + 26} ${x - 32} ${y} Z`
-  const ix = x + dx
-  const iy = y + dy
+const ALMOND = 'M-32 0Q0 -26 32 0Q0 26 -32 0Z'
 
+/** The eye itself: almond, iris, pupil, lashes. Centred on (0, 0). */
+export function Eye({ dx = 0, dy = 0, pupil = 6, blink = 0, lock = 0 }: EyeProps) {
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, '')
   return (
     <g>
       <defs>
-        <radialGradient id={`${uid}g`}>
-          <stop offset="0" stopColor="var(--primary)" stopOpacity={0.4} />
-          <stop offset="1" stopColor="var(--primary)" stopOpacity={0} />
-        </radialGradient>
         <radialGradient id={`${uid}i`}>
           <stop offset="0.3" stopColor="var(--primary-glow)" />
           <stop offset="1" stopColor="var(--primary-deep)" />
         </radialGradient>
         <clipPath id={`${uid}c`}>
-          <path d={almond} />
+          <path d={ALMOND} />
         </clipPath>
       </defs>
-
-      <circle cx={x} cy={y} r={58} fill={`url(#${uid}g)`} opacity={0.55 + 0.45 * lock} />
-      <path d={`M${x} ${y + 16}V${y + 66}`} className="stroke-text-muted" strokeOpacity={0.35} strokeWidth={3} strokeLinecap="round" />
-      <ellipse cx={x} cy={y + 68} rx={11} ry={3} className="fill-border" />
-
-      <g transform={`translate(${x} ${y}) scale(1 ${1 - 0.92 * blink}) translate(${-x} ${-y})`}>
-        <path d={almond} className="fill-surface stroke-primary" strokeWidth={1.5} />
+      <g transform={`scale(1 ${1 - 0.92 * blink})`}>
+        <path d={ALMOND} className="fill-surface stroke-primary" strokeWidth={1.5} />
         <g clipPath={`url(#${uid}c)`}>
-          <circle cx={ix} cy={iy} r={13} fill={`url(#${uid}i)`} />
+          <circle cx={dx} cy={dy} r={13} fill={`url(#${uid}i)`} />
           {/* iris fibres turn as it focuses */}
-          <g transform={`rotate(${lock * 60} ${ix} ${iy})`} className="stroke-primary-deep" strokeWidth={0.8} opacity={0.7}>
+          <g transform={`rotate(${lock * 60} ${dx} ${dy})`} className="stroke-primary-deep" strokeWidth={0.8} opacity={0.7}>
             {Array.from({ length: 12 }, (_, i) => {
               const a = (i / 12) * Math.PI * 2
               return (
-                <line
-                  key={i}
-                  x1={ix + Math.cos(a) * 7.5}
-                  y1={iy + Math.sin(a) * 7.5}
-                  x2={ix + Math.cos(a) * 11.5}
-                  y2={iy + Math.sin(a) * 11.5}
-                />
+                <line key={i} x1={dx + Math.cos(a) * 7.5} y1={dy + Math.sin(a) * 7.5} x2={dx + Math.cos(a) * 11.5} y2={dy + Math.sin(a) * 11.5} />
               )
             })}
           </g>
-          <circle cx={ix} cy={iy} r={pupil} className="fill-bg" />
-          <circle cx={ix - 4} cy={iy - 4} r={2.2} className="fill-text" opacity={0.9} />
-          <circle cx={ix + 3} cy={iy + 3} r={1.1} className="fill-threat" opacity={lock * 0.9} />
+          <circle cx={dx} cy={dy} r={pupil} className="fill-bg" />
+          <circle cx={dx - 4} cy={dy - 4} r={2.2} className="fill-text" opacity={0.9} />
+          <circle cx={dx + 3} cy={dy + 3} r={1.1} className="fill-threat" opacity={lock * 0.9} />
         </g>
-        <path
-          d={`M${x - 14} ${y - 10}l-3 -5M${x} ${y - 13}v-5M${x + 14} ${y - 10}l3 -5`}
-          className="stroke-primary"
-          strokeWidth={1.5}
-          strokeLinecap="round"
-        />
+        <path d="M-14 -10l-3 -5M0 -13v-5M14 -10l3 -5" className="stroke-primary" strokeWidth={1.5} strokeLinecap="round" />
       </g>
+    </g>
+  )
+}
+
+/** Watcher in the hero: the eye on a signal tower in the middle of the loop. */
+export function WatcherEye(props: Required<EyeProps>) {
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, '')
+  return (
+    <g transform={`translate(${EYE.x} ${EYE.y})`}>
+      <defs>
+        <radialGradient id={`${uid}g`}>
+          <stop offset="0" stopColor="var(--primary)" stopOpacity={0.4} />
+          <stop offset="1" stopColor="var(--primary)" stopOpacity={0} />
+        </radialGradient>
+      </defs>
+      <circle r={58} fill={`url(#${uid}g)`} opacity={0.55 + 0.45 * props.lock} />
+      <path d="M0 16V66" className="stroke-text-muted" strokeOpacity={0.35} strokeWidth={3} strokeLinecap="round" />
+      <ellipse cy={68} rx={11} ry={3} className="fill-border" />
+      <Eye {...props} />
     </g>
   )
 }
@@ -108,13 +107,20 @@ export function Perch() {
   )
 }
 
+interface BouncerProps {
+  squash: number
+  squint: number
+  x?: number
+  y?: number
+}
+
 /** Bouncer: a sturdy buffer stop with a stern face and a spring. */
-export function Bouncer({ squash, squint }: { squash: number; squint: number }) {
+export function Bouncer({ squash, squint, x = BUFFER.x, y = BUFFER.y }: BouncerProps) {
   const w = 7 * (1 - 0.6 * squash) // spring length
   const spring =
     'M10 0' + Array.from({ length: 6 }, (_, i) => `L${10 + (w * (i + 0.5)) / 6} ${i % 2 ? 2.5 : -2.5}`).join('') + `L${10 + w} 0`
   return (
-    <g transform={`translate(${BUFFER.x} ${BUFFER.y})`}>
+    <g transform={`translate(${x} ${y})`}>
       <circle r={26} className="fill-primary" opacity={squash * 0.2} />
       <path d={spring} fill="none" className="stroke-text-muted" strokeWidth={1.3} strokeLinejoin="round" />
       <rect x={9 + w} y={-6} width={2.5} height={12} rx={1} className="fill-primary-glow" />
@@ -140,9 +146,15 @@ export function Bouncer({ squash, squint }: { squash: number; squint: number }) 
   )
 }
 
-/** The human analyst on the platform. Dozes until the gate is unsure. */
-export function Analyst({ awake, approve }: { awake: number; approve: number }) {
-  const { x, y } = ANALYST
+interface AnalystProps {
+  awake: number
+  approve: number
+  x?: number
+  y?: number
+}
+
+/** The human analyst. Dozes until the gate is unsure. */
+export function Analyst({ awake, approve, x = ANALYST.x, y = ANALYST.y }: AnalystProps) {
   const body = `color-mix(in oklab, var(--text) ${Math.round(awake * 100)}%, var(--text-muted))`
   return (
     <g>

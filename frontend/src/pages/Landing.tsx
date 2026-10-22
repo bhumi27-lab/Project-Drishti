@@ -1,5 +1,6 @@
 import { Eye, Gauge, Search, Shield } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { LogoEye } from '@/components/agents/LogoEye'
 import { Hero } from '@/features/landing/Hero'
 
 // The four scroll sections replace the #how strip later in Phase 1.
@@ -14,8 +15,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
-        <Link to="/" className="flex items-center gap-2 font-medium text-text">
-          <Eye className="size-5 text-primary-glow" />
+        <Link to="/" className="flex items-center gap-2.5 font-medium text-text">
+          <LogoEye />
           Drishti
         </Link>
         <Link to="/dashboard" className="text-sm text-text-muted transition-colors hover:text-text">

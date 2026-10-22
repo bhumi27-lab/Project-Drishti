@@ -232,9 +232,9 @@ Confidence threshold slider (default 80), mitigation mode (Simulated / Real, wit
 
 | Table | Key columns |
 |---|---|
-| `logs` | id, timestamp, source (ssh/web/firewall/system), src_ip, dst_ip, user, event_type, raw, parsed (JSONB) |
-| `alerts` | id, created_at, log_ids[], anomaly_score, rule_hits[], severity, status |
-| `incidents` | id, alert_id, state (JSONB snapshot), stage, technique_id, technique_name, confidence, decision (auto/human), status (open/blocked/approved/rejected/escalated), created_at, closed_at |
+| `logs` | id, timestamp, source (ssh/web/firewall/system), src_ip, dst_ip, user, event_type, raw, parsed (JSONB), alert_id (nullable) |
+| `alerts` | id, created_at, log_ids[], anomaly_score, rule_hits[], severity, status, src_ip, source, incident_id |
+| `incidents` | id, alert_id, state (JSONB snapshot), stage, technique_id, technique_name, confidence, decision (auto/human/dismiss), status (open/blocked/approved/rejected/escalated/dismissed), summary, severity, proposed_action (JSONB), created_at, closed_at |
 | `context_requests` | id, incident_id, requested_by, query, result_summary, created_at |
 | `actions` | id, incident_id, type (block_ip/rate_limit/disable_user), target, mode (simulated/real), executed_by (bouncer/analyst), success, created_at |
 | `approvals` | id, incident_id, analyst, decision, comment, created_at |
@@ -303,7 +303,7 @@ watcher ─► detective ─┬─► confidence_gate ─┬─► bouncer ─�
 |---|---|---|
 | GET | `/health` | status of db, chroma, ollama |
 | POST | `/api/v1/logs/ingest` | ingest one or many logs |
-| GET | `/api/v1/logs` | list/search logs |
+| GET | `/api/v1/logs` | list/search logs (`q`, `source`, `alert_id`, `limit`) |
 | GET | `/api/v1/alerts` | list alerts |
 | GET | `/api/v1/incidents` | list incidents |
 | GET | `/api/v1/incidents/{id}` | full investigation detail |
@@ -313,6 +313,7 @@ watcher ─► detective ─┬─► confidence_gate ─┬─► bouncer ─�
 | GET | `/api/v1/stats` | dashboard tiles + chart data |
 | GET/PUT | `/api/v1/settings` | threshold, mitigation mode |
 | POST | `/api/v1/simulator/start` / `stop` | control the log simulator |
+| POST | `/api/v1/simulator/inject` | run one scenario now (`{ scenario }`) |
 | WS | `/api/v1/ws/events` | live events: `log`, `alert`, `stage_change`, `incident_closed`, `approval_needed` |
 
 The frontend `types/` must mirror these schemas exactly.
@@ -346,18 +347,18 @@ The frontend `types/` must mirror these schemas exactly.
 
 ### Phase 1 — Design system + Landing page
 - [x] Color tokens + fonts + background glow/grid
-- [ ] Layout primitives (PageShell, Sidebar, Topbar)
+- [x] Layout primitives (PageShell, Sidebar, Topbar)
 - [x] **PipelineScene** hero animation (section 6.1 spec)
 - [ ] Four agent scroll sections (alternating left/right)
 - [ ] Footer
 - [ ] Reduced-motion + mobile check
 
 ### Phase 2 — Dashboard UI on mock data
-- [ ] `types/` for Log, Alert, Incident, Action, Approval, Stats
-- [ ] `mocks/` with realistic data for all scenarios in section 8
-- [ ] Dashboard page (tiles, live pipeline strip, feed, one chart)
-- [ ] Alerts, Investigation detail, Approvals, Logs, Settings pages
-- [ ] Fake "live" updates via a mock event emitter
+- [x] `types/` for Log, Alert, Incident, Action, Approval, Stats
+- [x] `mocks/` with realistic data for all scenarios in section 8
+- [x] Dashboard page (tiles, live pipeline strip, feed, one chart)
+- [x] Alerts, Investigation detail, Approvals, Logs, Settings pages
+- [x] Fake "live" updates via a mock event emitter
 
 ### Phase 3 — Backend foundation
 - [ ] Docker Compose: PostgreSQL, ChromaDB, Ollama up and running
@@ -494,3 +495,4 @@ Larger local models · more knowledge sources (CVE, threat intel feeds) · advan
 | 2026-10-22 | — | Master plan created |
 | 2026-10-22 | 0 | Monorepo skeleton: frontend (Vite/Tailwind v4/shadcn/Router), backend (/health), compose, docs, CLAUDE.md |
 | 2026-10-22 | 1 | Hero + PipelineScene ("Watching Railway": Iris eye + toy railway), glow token, MotionConfig reduced motion |
+| 2026-10-22 | 2 | Dashboard UI on mock data: types, seeded mocks for all scenarios, app shell, 7 pages, live mock event stream |

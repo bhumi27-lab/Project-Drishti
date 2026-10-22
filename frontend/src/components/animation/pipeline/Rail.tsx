@@ -88,31 +88,43 @@ export function Dial({ value, human, thrown }: { value: number; human: boolean; 
         style={{ stroke: toward(thrown, 'var(--primary-glow)', 'var(--border)') }}
       />
       <g transform={`translate(${DIAL.x} ${DIAL.y})`}>
-        <circle r={21} className="fill-card stroke-border" strokeWidth={1} />
-        <circle r={15} fill="none" className="stroke-border" strokeWidth={3} />
-        {/* threshold tick at 80% */}
-        <line y1={-19} y2={-11} transform="rotate(288)" className="stroke-text-muted" strokeWidth={1} strokeLinecap="round" />
-        <circle
-          r={15}
-          fill="none"
-          strokeWidth={3}
-          strokeLinecap="round"
-          pathLength={1}
-          strokeDasharray={`${value} 1`}
-          transform="rotate(-90)"
-          opacity={value > 0.01 ? 1 : 0}
-          style={{ stroke: color }}
-        />
-        <text
-          y={2.8}
-          textAnchor="middle"
-          className="fill-text font-mono"
-          fontSize={8}
-          opacity={value > 0.05 ? 1 : 0}
-        >
+        <Gauge value={value} color={color} />
+      </g>
+    </g>
+  )
+}
+
+interface GaugeProps {
+  value: number // 0-1
+  color: string
+  threshold?: number
+  showValue?: boolean
+}
+
+/** The Confidence Gate's ring, centred on (0, 0). Also used as an app glyph. */
+export function Gauge({ value, color, threshold = 0.8, showValue = true }: GaugeProps) {
+  return (
+    <g>
+      <circle r={21} className="fill-card stroke-border" strokeWidth={1} />
+      <circle r={15} fill="none" className="stroke-border" strokeWidth={3} />
+      {/* threshold tick */}
+      <line y1={-19} y2={-11} transform={`rotate(${threshold * 360})`} className="stroke-text-muted" strokeWidth={1} strokeLinecap="round" />
+      <circle
+        r={15}
+        fill="none"
+        strokeWidth={3}
+        strokeLinecap="round"
+        pathLength={1}
+        strokeDasharray={`${value} 1`}
+        transform="rotate(-90)"
+        opacity={value > 0.01 ? 1 : 0}
+        style={{ stroke: color }}
+      />
+      {showValue && (
+        <text y={2.8} textAnchor="middle" className="fill-text font-mono" fontSize={8} opacity={value > 0.05 ? 1 : 0}>
           {Math.round(value * 100)}
         </text>
-      </g>
+      )}
     </g>
   )
 }

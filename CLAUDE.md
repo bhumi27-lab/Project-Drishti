@@ -25,7 +25,8 @@ Orchestrated with LangGraph; shared state is `IncidentState`.
 
 ## Folder map
 
-- `frontend/src/` app (router, providers, layout) | pages | components/{ui,layout,animation,agents} | features | lib | mocks | types | styles
+- `frontend/src/` app (router, providers, layout) | pages | components/{ui,layout,animation,agents,common} | features | lib | mocks | types | styles
+- Agent characters live in `components/animation/pipeline/Characters.tsx` (origin-centred); use them in the app via `components/agents/AgentGlyph`.
 - `backend/app/` main.py | core | api/v1/routes | agents | orchestration | rag | llm | mitigation | db | schemas | services
 - `backend/tests/`, `data/{sample_logs,mitre}`, `scripts/`, `evaluation/`, `docs/`
 
