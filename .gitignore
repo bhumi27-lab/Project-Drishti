@@ -216,3 +216,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- Project Drishti ---
+node_modules/
+.env
+.env.*
+!.env.example
+chroma_data/
+.chroma/
+data/mitre/*.json
+backend/.venv/
+*.tsbuildinfo
+!frontend/src/lib/

@@ -1,85 +1,74 @@
-
-
 # Project Drishti
 
-### Autonomous AI SOC — Multi-Agent AI Orchestration for Real-Time Cyber Threat Detection & Mitigation
+**Autonomous AI SOC: multi-agent orchestration for real-time threat detection and mitigation.**
+*The AI That Fights Back.*
 
-> **The AI That Fights Back.**
+Drishti watches logs, investigates suspicious events with grounded reasoning (RAG over MITRE ATT&CK plus a local LLM),
+scores its own confidence, and either acts on its own or asks a human analyst. Everything runs locally.
 
-Project Drishti is a **multi-agent AI system** designed to detect, investigate, and respond to suspicious cyber activity through specialized AI agents, RAG-based knowledge retrieval, local LLM reasoning, and controlled autonomous response.
-
----
-
-## 🎯 Vision
-
-Cybersecurity is the problem domain.  
-**AI is the solution engine.**
-
-Project Drishti follows a simple principle:
+## Pipeline
 
 **SEE → UNDERSTAND → DECIDE → DEFEND**
 
----
-
-## 🧠 How It Works
-
-Project Drishti uses three specialized AI agents:
-
-### 👁️ Watcher — Detection
-
-- Monitors incoming security logs
-- Identifies suspicious or anomalous activity
-- Retrieves relevant historical context from PostgreSQL
-- Passes important events to the Detective
-
-### 🕵️ Detective — Investigation
-
-- Investigates suspicious events
-- Retrieves relevant knowledge using RAG
-- Uses MITRE ATT&CK as the threat knowledge source
-- Performs reasoning using a local Llama 3.2 model
-- Can request additional context from the Watcher when information is insufficient
-
-### 🛡️ Bouncer — Mitigation
-
-- Receives the validated decision
-- Performs controlled response actions
-- Can block a malicious IP when the required confidence conditions are satisfied
-
----
-
-## 🔄 System Flow
+| Stage | Agent | Role |
+|---|---|---|
+| SEE | Watcher | Detects anomalies, filters noise, pulls history from PostgreSQL |
+| UNDERSTAND | Detective | MITRE ATT&CK RAG (ChromaDB) + Llama 3.2 3B; can ask Watcher for more context |
+| DECIDE | Confidence Gate | > 80% autonomous, < 80% human approval |
+| DEFEND | Bouncer | Executes mitigation such as an IP block (simulated by default) |
 
 ```text
-Incoming Logs
-      │
-      ▼
-   Watcher
-      │
-      ├── Historical Context
-      │        │
-      │        ▼
-      │   PostgreSQL
-      │
-      ▼
-  Detective
-      │
-      ├── RAG Retrieval
-      │        │
-      │        ▼
-      │   ChromaDB
-      │        │
-      │        ▼
-      │  MITRE ATT&CK
-      │
-      ├── Llama 3.2
-      │        │
-      │        ▼
-      │    AI Reasoning
-      │
-      ▼
- Confidence Gate
-      │
-      ├── High Confidence ──► Bouncer ──► Controlled Response
-      │
-      └── Low Confidence ───► Human Analyst
+Logs → Watcher → Detective → Confidence Gate ─┬─ ≥ 80% → Bouncer
+          ▲          │                         └─ < 80% → Human analyst
+          └──────────┘ (needs more context)
+```
+
+More in [docs/architecture.md](docs/architecture.md) and [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md).
+
+## Stack
+
+React · Vite · TypeScript · Tailwind · shadcn/ui · Framer Motion | FastAPI · LangGraph · SQLAlchemy |
+PostgreSQL · ChromaDB · Ollama (Llama 3.2 3B) | Docker Compose
+
+## Run
+
+Needs Node 20+, Python 3.11+, Docker (optional until Phase 3).
+
+```powershell
+# Frontend  ->  http://localhost:5173
+cd frontend
+npm install
+npm run dev
+
+# Backend  ->  http://localhost:8000/health
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+
+# Infrastructure (postgres, chromadb, ollama)
+Copy-Item .env.example .env
+docker compose up -d
+```
+
+## Layout
+
+```
+frontend/   React app          backend/   FastAPI + agents + LangGraph
+data/       sample logs, MITRE scripts/   log simulator, seeding
+evaluation/ metrics            docs/      plan, architecture, diagrams
+```
+
+## Safety
+
+Mitigation is **simulated by default**. The real firewall is never touched unless `MITIGATION_MODE=real`
+is set and the target is not allowlisted.
+
+## Team
+
+Vedang Doulatabad · Bhumi Sirvi · Lakshyaveer Rana. BE Information Technology, SPPU, 2026–27.
+
+## License
+
+MIT

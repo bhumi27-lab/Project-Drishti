@@ -1,0 +1,37 @@
+# Stub: infrastructure only. Backend and frontend run on the host during development.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-drishti}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-drishti}
+      POSTGRES_DB: ${POSTGRES_DB:-drishti}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000" # host 8001 so it does not clash with the FastAPI backend on 8000
+    volumes:
+      - chroma_data:/data
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    # GPU (NVIDIA): uncomment
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - capabilities: [gpu]
+
+volumes:
+  postgres_data:
+  chroma_data:
+  ollama_data:

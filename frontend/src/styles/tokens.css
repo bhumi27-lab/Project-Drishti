@@ -1,0 +1,22 @@
+/* Drishti design tokens. Single source of truth for colour. */
+:root {
+  /* surfaces: never flat black, layered with glow + grid in index.css */
+  --bg: #0b0c0f;
+  --surface: #12151c;
+  --card: #171b24;
+  --border: #232a36;
+
+  /* cerulean identity */
+  --primary: #1e9bd7;
+  --primary-deep: #007ba7;
+  --primary-glow: #4fc3f7;
+
+  /* neon rose: ONLY threats, alerts, blocked. Never decoration. */
+  --threat: #ff3d81;
+
+  --success: #2ed3a0;
+  --warning: #f5b544;
+
+  --text: #e8eef5;
+  --text-muted: #8a94a6;
+}
