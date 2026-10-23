@@ -1,22 +1,25 @@
-/* Drishti design tokens. Single source of truth for colour. */
+/* Drishti design tokens: "Acid Moss". Single source of truth for colour. */
 :root {
-  /* surfaces: never flat black, layered with glow + grid in index.css */
-  --bg: #0b0c0f;
-  --surface: #12151c;
-  --card: #171b24;
-  --border: #232a36;
+  /* surfaces: deep moss black, layered with glow + grid in index.css */
+  --bg: #0e1410;
+  --surface: #141c17;
+  --card: #1a241e;
+  --border: #2a3a30;
 
-  /* cerulean identity */
-  --primary: #1e9bd7;
-  --primary-deep: #007ba7;
-  --primary-glow: #4fc3f7;
+  /* acid lime: identity, headline words, primary actions, active states, fibres, iris */
+  --primary: #c8ff3d;
+  --primary-deep: #9ed11f;
+  --primary-light: #dbff7a;
 
-  /* neon rose: ONLY threats, alerts, blocked. Never decoration. */
-  --threat: #ff3d81;
+  /* sage: borders, inactive states, secondary outlines (not for small text: ~4:1 on bg) */
+  --sage: #5e7a63;
 
-  --success: #2ed3a0;
-  --warning: #f5b544;
+  /* coral: ONLY threats, alerts, blocked */
+  --threat: #ff5a4e;
 
-  --text: #e8eef5;
-  --text-muted: #8a94a6;
+  --success: #5fe3b0; /* mint: resolved, auto decisions */
+  --warning: #ffc24b; /* amber: needs approval */
+
+  --text: #d7e3d2;
+  --text-muted: #8fa393;
 }

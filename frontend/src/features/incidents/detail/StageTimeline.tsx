@@ -56,7 +56,7 @@ export function StageTimeline({ incident }: { incident: IncidentDetail }) {
               <li aria-hidden className="relative mt-6 h-px w-4 flex-1 bg-border sm:w-16">
                 {s.agent === 'detective' && loops > 0 && (
                   <span
-                    className="absolute -top-7 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 text-[11px] whitespace-nowrap text-primary-glow"
+                    className="absolute -top-7 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 text-[11px] whitespace-nowrap text-primary"
                     title="Detective asked Watcher for more context"
                   >
                     <RotateCcw className="size-3" /> {loops}
@@ -68,7 +68,7 @@ export function StageTimeline({ incident }: { incident: IncidentDetail }) {
               <span
                 className={cn(
                   'relative grid size-12 place-items-center rounded-2xl bg-surface ring-1',
-                  s.state === 'current' ? 'ring-warning/60' : s.state === 'done' ? 'ring-primary/40' : 'ring-border',
+                  s.state === 'current' ? 'ring-warning/60' : s.state === 'done' ? 'ring-primary/50' : 'ring-border',
                 )}
               >
                 {s.state === 'current' && <span className="absolute inset-0 animate-ping rounded-2xl ring-1 ring-warning/40 motion-reduce:hidden" />}

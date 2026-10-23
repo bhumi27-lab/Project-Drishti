@@ -47,7 +47,7 @@ export default function Alerts() {
               onClick={() => toggleSeverity(s)}
               className={cn(
                 'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs capitalize transition-colors',
-                severity.includes(s) ? 'border-primary/40 bg-primary/10 text-text' : 'border-border text-text-muted hover:text-text',
+                severity.includes(s) ? 'border-primary/50 bg-primary/10 text-text' : 'border-border text-text-muted hover:text-text',
               )}
             >
               <SeverityDot severity={s} /> {s}

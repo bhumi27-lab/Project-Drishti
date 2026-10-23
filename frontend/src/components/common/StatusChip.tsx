@@ -5,7 +5,7 @@ const TONE = {
   threat: 'border-threat/25 bg-threat/10 text-threat',
   success: 'border-success/25 bg-success/10 text-success',
   warning: 'border-warning/25 bg-warning/10 text-warning',
-  primary: 'border-primary/25 bg-primary/10 text-primary-glow',
+  primary: 'border-primary/30 bg-primary/10 text-primary',
   muted: 'border-border bg-card text-text-muted',
 }
 

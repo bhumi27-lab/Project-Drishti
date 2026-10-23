@@ -67,7 +67,7 @@ is set and the target is not allowlisted.
 
 ## Team
 
-Vedang Doulatabad · Bhumi Sirvi · Lakshyaveer Rana. BE Information Technology, SPPU, 2026–27.
+Bhumi Sirvi ·  Vedang Doulatabad ·Lakshyaveer Rana. BE Information Technology, SPPU, 2026–27.
 
 ## License
 

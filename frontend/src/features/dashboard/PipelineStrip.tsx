@@ -30,8 +30,8 @@ export function PipelineStrip({ stats }: { stats?: Stats }) {
           const busy = (c?.active ?? 0) > 0
           return (
             <li key={s.id} className="relative flex flex-col items-center text-center">
-              <span className={cn('relative grid size-14 place-items-center rounded-2xl bg-surface ring-1', busy ? 'ring-primary/60' : 'ring-border')}>
-                {busy && <span className="absolute inset-0 animate-ping rounded-2xl ring-1 ring-primary/40 motion-reduce:hidden" />}
+              <span className={cn('relative grid size-14 place-items-center rounded-2xl bg-surface ring-1', busy ? 'ring-primary/70' : 'ring-border')}>
+                {busy && <span className="absolute inset-0 animate-ping rounded-2xl ring-1 ring-primary/50 motion-reduce:hidden" />}
                 <AgentGlyph agent={s.id} active={busy} className="size-8" />
               </span>
               <p className="mt-3 text-sm text-text">{s.label}</p>

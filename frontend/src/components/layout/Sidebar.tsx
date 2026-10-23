@@ -8,7 +8,7 @@ export function Brand() {
   return (
     <Link to="/" className="flex h-14 items-center gap-2.5 px-5 md:justify-center md:px-0 lg:justify-start lg:px-5">
       <LogoEye />
-      <span className="font-medium tracking-tight text-text md:hidden lg:inline">Drishti</span>
+      <span className="font-medium tracking-tight text-white md:hidden lg:inline">Drishti</span>
     </Link>
   )
 }

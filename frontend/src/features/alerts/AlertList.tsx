@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 import type { Alert, AlertStatus } from '@/types'
 
 const STATUS: Record<AlertStatus, string> = {
-  new: 'text-primary-glow',
+  new: 'text-primary',
   investigating: 'text-warning',
   closed: 'text-text-muted',
 }

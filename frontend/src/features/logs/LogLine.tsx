@@ -12,13 +12,13 @@ function highlight(text: string, needle: string) {
   return (
     <>
       {text.slice(0, i)}
-      <mark className="rounded-sm bg-primary/25 text-text">{text.slice(i, i + needle.length)}</mark>
+      <mark className="rounded-sm bg-primary/30 text-text">{text.slice(i, i + needle.length)}</mark>
       {text.slice(i + needle.length)}
     </>
   )
 }
 
-/** One raw log line. Lines that belong to an alert carry a rose marker. Click to see parsed fields. */
+/** One raw log line. Lines that belong to an alert carry a coral marker. Click to see parsed fields. */
 export function LogLine({ log, needle, fresh = false }: { log: Log; needle: string; fresh?: boolean }) {
   const [open, setOpen] = useState(false)
   const flagged = log.alert_id !== null

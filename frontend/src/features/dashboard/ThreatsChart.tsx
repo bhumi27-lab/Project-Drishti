@@ -46,7 +46,7 @@ export function ThreatsChart({ data }: { data?: Stats['threats_24h'] }) {
                 cursor={{ fill: 'color-mix(in oklab, var(--primary) 10%, transparent)' }}
                 isAnimationActive={false}
               />
-              <Bar dataKey="count" fill="var(--primary)" radius={[4, 4, 0, 0]} maxBarSize={24} activeBar={{ fill: 'var(--primary-glow)' }} />
+              <Bar dataKey="count" fill="var(--primary)" radius={[4, 4, 0, 0]} maxBarSize={24} activeBar={{ fill: 'var(--primary-light)' }} />
             </BarChart>
           </ResponsiveContainer>
         ) : (

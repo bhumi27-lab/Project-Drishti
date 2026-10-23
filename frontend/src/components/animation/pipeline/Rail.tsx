@@ -1,10 +1,10 @@
 import { CAR_HALF, DIAL, PLATFORM_X, SWITCH_LEVER, loop, spur, type Pose } from './track'
 
-const CAR_FILL = 'color-mix(in oklab, var(--primary) 14%, var(--card))'
-const CAR_STROKE = 'color-mix(in oklab, var(--primary) 40%, var(--border))'
-const CAR_LINES = 'color-mix(in oklab, var(--primary-glow) 60%, transparent)'
+const CAR_FILL = 'color-mix(in oklab, var(--sage) 22%, var(--card))'
+const CAR_STROKE = 'color-mix(in oklab, var(--sage) 75%, var(--border))'
+const CAR_LINES = 'color-mix(in oklab, var(--text) 55%, transparent)'
 
-/** Blend a base colour towards neon rose. Rose only ever means "threat". */
+/** Blend a base colour towards coral. Coral only ever means "threat". */
 const toThreat = (amount: number, base: string) =>
   `color-mix(in oklab, var(--threat) ${Math.round(amount * 100)}%, ${base})`
 
@@ -18,10 +18,10 @@ export function Rails({ thrown }: { thrown: number }) {
         <g key={i}>
           <path d={d} className="stroke-border" strokeWidth={12} />
           <path d={d} className="stroke-text-muted" strokeOpacity={0.22} strokeWidth={12} strokeDasharray="1.5 6" strokeLinecap="butt" />
-          <path d={d} className="stroke-primary" strokeWidth={1} strokeOpacity={0.5} />
+          <path d={d} className="stroke-sage" strokeWidth={1} strokeOpacity={0.6} />
         </g>
       ))}
-      <path d={spur.d} className="stroke-primary-glow" strokeWidth={2} strokeOpacity={thrown * 0.55} />
+      <path d={spur.d} className="stroke-primary-light" strokeWidth={2} strokeOpacity={thrown * 0.55} />
     </g>
   )
 }
@@ -56,13 +56,13 @@ export function Carriage({ pose, threat = 0, opacity = 1, scale = 1 }: CarriageP
         strokeLinecap="round"
         style={{ stroke: toThreat(threat, CAR_LINES) }}
       />
-      <circle cx={10.5} cy={0} r={1.3} style={{ fill: toThreat(threat, 'var(--primary-glow)') }} />
+      <circle cx={10.5} cy={0} r={1.3} style={{ fill: toThreat(threat, 'var(--primary-light)') }} />
     </g>
   )
 }
 
 export function Switch({ thrown }: { thrown: number }) {
-  const color = toward(thrown, 'var(--primary-glow)', 'var(--text-muted)')
+  const color = toward(thrown, 'var(--primary-light)', 'var(--text-muted)')
   return (
     <g transform={`translate(${SWITCH_LEVER.x} ${SWITCH_LEVER.y})`}>
       <circle r={2.5} className="fill-border" />
@@ -85,7 +85,7 @@ export function Dial({ value, human, thrown }: { value: number; human: boolean; 
         strokeWidth={1}
         strokeDasharray="1 3"
         strokeLinecap="round"
-        style={{ stroke: toward(thrown, 'var(--primary-glow)', 'var(--border)') }}
+        style={{ stroke: toward(thrown, 'var(--primary-light)', 'var(--border)') }}
       />
       <g transform={`translate(${DIAL.x} ${DIAL.y})`}>
         <Gauge value={value} color={color} />

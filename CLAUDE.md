@@ -53,28 +53,38 @@ Infra: `docker compose up -d`. Tests: `pytest` (backend), `npm run build` (front
 - Every agent decision writes an audit entry.
 - Never touch the real host firewall unless `MITIGATION_MODE=real` AND the IP is not allowlisted.
 - Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`. One feature per branch. No secrets in git.
+- Never add Co-Authored-By, Claude-Session or Generated-with lines to commits or PRs. Commits show only the user as author (also enforced by `.claude/settings.json` `attribution`).
 
 ## UI rules
 
 **Keep the UI minimal with very little text.** One or two short lines per section; let space and motion explain.
 Respect `prefers-reduced-motion`. Few charts. Logs/investigations on separate pages.
 
-## Colour tokens (`frontend/src/styles/tokens.css`, Tailwind: `bg-surface`, `text-threat`, ...)
+## Colour tokens: "Acid Moss" (`frontend/src/styles/tokens.css`, Tailwind: `bg-surface`, `text-primary`, `border-sage`, `text-threat`, ...)
 
 | Token | Hex |
 |---|---|
-| bg (jet black) | #0B0C0F |
-| surface | #12151C |
-| card | #171B24 |
-| border | #232A36 |
-| primary (cerulean) | #1E9BD7 |
-| primary-deep | #007BA7 |
-| primary-glow | #4FC3F7 |
-| threat (neon rose) | #FF3D81 |
-| success | #2ED3A0 |
-| warning | #F5B544 |
-| text | #E8EEF5 |
-| text-muted | #8A94A6 |
+| bg (deep moss black) | #0E1410 |
+| surface | #141C17 |
+| card | #1A241E |
+| border | #2A3A30 |
+| primary (acid lime) | #C8FF3D |
+| primary-deep | #9ED11F |
+| primary-light | #DBFF7A |
+| sage (secondary) | #5E7A63 |
+| threat (coral) | #FF5A4E |
+| success (mint) | #5FE3B0 |
+| warning (amber) | #FFC24B |
+| text (sage-white) | #D7E3D2 |
+| text-muted | #8FA393 |
 
-Neon rose is **only** for threats, alerts and blocked items, never decoration.
-Do not use flat black: keep the cerulean radial glows, faint grid and noise from `index.css`.
+**Lime** (`text-primary`): headline words, stage labels, small labels, logo text, links, active nav, active/popped card, fibres and iris. Primary buttons: `bg-primary` with moss-black text (`text-bg`). Lime never goes on long text.
+**Sage** (`border-sage`): borders, inactive states, secondary button outlines, railway. Never small text (~4:1 on bg).
+**Coral** (`text-threat`): threats (threat beads, BLOCKED, alert badges, the locked iris tick) plus a small text accent: the italic headline accent word, the How it works stage labels and key example values. About one accent per section; never body text or buttons; solid, no glow.
+The hero DRISHTI title is soft white `#F4F7F2`; the tagline is sage-white `text-text`. How it works card descriptions and the "Drishti" logo word are pure white `#FFFFFF`. Titles in cards/panels are `text-text`; body is `text-text` / `text-text-muted`.
+No text glow, no matrix/terminal-green clichés. Keep the faint moss glows, grid and noise from `index.css`; never flat black.
+
+## Typography
+
+- `font-display` **Unbounded** for big uppercase headings (landing); `font-serif` **Instrument Serif** italic (sage-white) for one accent word per headline. Use `Headline` / `Accent` from `features/landing/sections/Headline.tsx`.
+- `font-sans` **Inter** for body and the whole dashboard. `font-mono` **JetBrains Mono** for logs, IPs, IDs, data.

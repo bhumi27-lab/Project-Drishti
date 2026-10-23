@@ -43,7 +43,7 @@ export function ApprovalCard({ incident: i, now }: { incident: Incident; now: nu
 
       {action && (
         <div className="flex items-center gap-3 rounded-xl bg-surface/70 px-3 py-2.5 text-sm">
-          {ActionIcon && <ActionIcon className="size-4 text-primary-glow" />}
+          {ActionIcon && <ActionIcon className="size-4 text-primary" />}
           <span className="text-text">{ACTION[action.type].label}</span>
           <span className="truncate font-mono text-xs text-text-muted">{action.target}</span>
         </div>

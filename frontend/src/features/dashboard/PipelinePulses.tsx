@@ -14,7 +14,7 @@ interface Pulse {
 }
 
 /**
- * A rose dot (the threat, like the hero's carriage) travels along the strip on every stage change,
+ * A coral dot (the threat, like the hero's carriage) travels along the strip on every stage change,
  * backwards too, when the Detective asks the Watcher for context.
  */
 export function PipelinePulses() {

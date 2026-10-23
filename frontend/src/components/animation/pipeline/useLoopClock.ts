@@ -12,14 +12,14 @@ const debugT = debug?.get('t')
 const frozen: LoopClock | null =
   debugT != null ? { t: Number(debugT), loop: Number(debug?.get('loop') ?? 0) } : null
 
-/** Seconds into the current loop, plus how many loops have played. Pauses off-screen. */
-export function useLoopClock(ref: RefObject<Element | null>, period: number, still: number): LoopClock {
+/** Seconds into the current loop, plus how many loops have played. Pauses off-screen, or when `paused`. */
+export function useLoopClock(ref: RefObject<Element | null>, period: number, still: number, paused = false): LoopClock {
   const reduce = useReducedMotion()
   const inView = useInView(ref)
   const [clock, setClock] = useState<LoopClock>({ t: 0, loop: 0 })
 
   useAnimationFrame((ms) => {
-    if (reduce || frozen || !inView) return
+    if (paused || reduce || frozen || !inView) return
     const s = ms / 1000
     setClock({ t: s % period, loop: Math.floor(s / period) })
   })

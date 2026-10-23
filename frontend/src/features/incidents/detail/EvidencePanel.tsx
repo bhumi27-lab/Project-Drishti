@@ -32,7 +32,7 @@ export function EvidencePanel({ alertId, related }: { alertId: string; related: 
     <Panel title="Evidence" agent="watcher" aside={data && `${data.total} logs`}>
       {data ? <Lines logs={shown} /> : <div className="h-24 animate-pulse rounded-lg bg-card/60" />}
       {trigger.length > PREVIEW && (
-        <button type="button" onClick={() => setAll((v) => !v)} className="mt-2 text-xs text-primary-glow hover:underline">
+        <button type="button" onClick={() => setAll((v) => !v)} className="mt-2 text-xs text-primary hover:underline">
           {all ? 'Show less' : `Show all ${trigger.length}`}
         </button>
       )}

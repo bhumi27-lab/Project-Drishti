@@ -23,8 +23,8 @@ export function Eye({ dx = 0, dy = 0, pupil = 6, blink = 0, lock = 0 }: EyeProps
     <g>
       <defs>
         <radialGradient id={`${uid}i`}>
-          <stop offset="0.3" stopColor="var(--primary-glow)" />
-          <stop offset="1" stopColor="var(--primary-deep)" />
+          <stop offset="0.3" stopColor="var(--primary-light)" />
+          <stop offset="1" stopColor="var(--primary)" />
         </radialGradient>
         <clipPath id={`${uid}c`}>
           <path d={ALMOND} />
@@ -35,7 +35,7 @@ export function Eye({ dx = 0, dy = 0, pupil = 6, blink = 0, lock = 0 }: EyeProps
         <g clipPath={`url(#${uid}c)`}>
           <circle cx={dx} cy={dy} r={13} fill={`url(#${uid}i)`} />
           {/* iris fibres turn as it focuses */}
-          <g transform={`rotate(${lock * 60} ${dx} ${dy})`} className="stroke-primary-deep" strokeWidth={0.8} opacity={0.7}>
+          <g transform={`rotate(${lock * 60} ${dx} ${dy})`} className="stroke-bg" strokeWidth={0.8} opacity={0.35}>
             {Array.from({ length: 12 }, (_, i) => {
               const a = (i / 12) * Math.PI * 2
               return (
@@ -84,13 +84,13 @@ export function Bird({ x, y, facing, loupe }: BirdProps) {
   return (
     <g transform={`translate(${x} ${y}) scale(${facing} 1)`}>
       <path d="M-6 -1L-11 -4.5L-10 1.5Z" className="fill-primary" />
-      <ellipse rx={7} ry={6} className="fill-primary-glow" />
+      <ellipse rx={7} ry={6} className="fill-primary-light" />
       <ellipse cx={1.8} cy={1.6} rx={4} ry={3.4} className="fill-text" opacity={0.9} />
       <circle cx={3} cy={-2.4} r={1.3} className="fill-bg" />
       <path d="M6.4 -1.6L9.8 -0.5L6.4 0.8Z" className="fill-text" />
       <path d="M-1.5 5.5v2.5M1.5 5.5v2.5" className="stroke-text-muted" strokeWidth={1} strokeLinecap="round" />
       <g transform={`translate(9 3.5) rotate(${loupe})`}>
-        <circle r={3.2} className="fill-primary-glow/20 stroke-text" strokeWidth={1.1} />
+        <circle r={3.2} className="fill-primary-light/20 stroke-text" strokeWidth={1.1} />
         <line x1={2.3} y1={2.3} x2={5} y2={5} className="stroke-text" strokeWidth={1.4} strokeLinecap="round" />
       </g>
     </g>
@@ -123,7 +123,7 @@ export function Bouncer({ squash, squint, x = BUFFER.x, y = BUFFER.y }: BouncerP
     <g transform={`translate(${x} ${y})`}>
       <circle r={26} className="fill-primary" opacity={squash * 0.2} />
       <path d={spring} fill="none" className="stroke-text-muted" strokeWidth={1.3} strokeLinejoin="round" />
-      <rect x={9 + w} y={-6} width={2.5} height={12} rx={1} className="fill-primary-glow" />
+      <rect x={9 + w} y={-6} width={2.5} height={12} rx={1} className="fill-primary-light" />
       <g transform={`translate(${-1.5 * squash} 0)`}>
         <rect x={-12} y={-15} width={22} height={30} rx={7} className="fill-card stroke-primary" strokeWidth={1.5} />
         <path d="M-7.5 -10.5L-3 -9M5.5 -10.5L1 -9" className="stroke-text" strokeWidth={1.2} strokeLinecap="round" />

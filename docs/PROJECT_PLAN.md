@@ -140,35 +140,39 @@ Project-Drishti/
 ### Feel
 Minimal, calm and confident, with very little text. It should look like a premium tool, not a hacker movie. Friendly rounded agent characters. Space and motion do the explaining, not paragraphs.
 
-### Color tokens
+### Color tokens: "Acid Moss"
 | Token | Hex | Use |
 |---|---|---|
-| `--bg` (jet black) | `#0B0C0F` | page background |
-| `--surface` | `#12151C` | sidebar, top bar |
-| `--card` | `#171B24` | cards, panels |
-| `--border` | `#232A36` | hairlines |
-| `--primary` (cerulean) | `#1E9BD7` | primary actions, Drishti identity |
-| `--primary-deep` | `#007BA7` | pressed/hover, gradients |
-| `--primary-glow` | `#4FC3F7` | glows, highlights |
-| `--threat` (neon rose) | `#FF3D81` | **only** threats, alerts, blocked items |
-| `--success` | `#2ED3A0` | safe/resolved |
-| `--warning` | `#F5B544` | needs approval |
-| `--text` | `#E8EEF5` | main text |
-| `--muted` | `#8A94A6` | secondary text |
+| `--bg` | `#0E1410` | page background (deep moss black) |
+| `--surface` | `#141C17` | sidebar, top bar |
+| `--card` | `#1A241E` | cards, panels |
+| `--border` | `#2A3A30` | hairlines |
+| `--primary` (acid lime) | `#C8FF3D` | headline words, primary buttons (moss-black text), active nav / active card, labels, links, fibres, iris |
+| `--primary-deep` | `#9ED11F` | fibre bodies, medium severity |
+| `--primary-light` | `#DBFF7A` | fibre tips, beads, hover |
+| `--sage` (secondary) | `#5E7A63` | borders, inactive states, secondary button outlines, railway |
+| `--threat` (coral) | `#FF5A4E` | threats (beads, BLOCKED, alert badges, locked iris tick) + a small text accent: italic headline accent words, How it works stage labels and key example values (IP, T1110, IP blocked) |
+| `--success` (mint) | `#5FE3B0` | resolved, auto decisions |
+| `--warning` (amber) | `#FFC24B` | needs approval |
+| `--text` (sage-white) | `#D7E3D2` | main text, hero tagline, titles |
+| `--text-muted` | `#8FA393` | secondary text |
 
-Don't use flat black. Add subtle cerulean radial glows, a faint grid or noise texture, and soft 1px borders. Neon rose is rare, so when it appears, it means something.
+Contrast on `--bg`: text 13:1, muted 7:1, lime 15:1, coral 6:1, amber 11:1, mint 11:1; moss-black on lime 15:1. Sage is ~4:1, so it is for borders and large shapes, not small text.
+Coral accents stay sparing (about one per section) and never go on body text or buttons. No text glow. Keep a faint lime/sage radial glow, a faint grid and noise texture, soft 1px borders; never flat black. Modern and premium, not retro: no matrix effects or terminal-green text blocks.
 
 ### Typography
-- UI: **Inter** or **Geist**
+- Big headings (landing): **Unbounded**, uppercase
+- Accent: **Instrument Serif** italic in coral, one word per headline (e.g. "LEARN *to see* THREATS FIRST"); the rest of the headline is acid lime
+- UI and body: **Inter**
 - Logs / IPs / technique IDs: **JetBrains Mono**
 
 ### Agent identities
 | Agent | Character | Accent |
 |---|---|---|
-| Watcher | A glowing eye with a scanning beam | cerulean |
-| Detective | A small robot with a magnifier | cerulean-glow |
-| Confidence Gate | A circular dial / gauge | cerulean → success / warning |
-| Bouncer | A friendly bodyguard robot with a shield | cerulean, rose on impact |
+| Watcher | A glowing eye with a scanning beam | lime |
+| Detective | A small robot with a magnifier | light lime |
+| Confidence Gate | A circular dial / gauge | lime → success / warning |
+| Bouncer | A friendly bodyguard robot with a shield | lime, coral on impact |
 
 ### Rules
 - At most 1–2 lines of text per section on the landing page
@@ -182,19 +186,22 @@ Don't use flat black. Add subtle cerulean radial glows, a faint grid or noise te
 ## 6. Frontend pages
 
 ### 6.1 Landing (`/`)
-**Hero (split screen):**
-- Left: "Drishti", tagline, one short line, buttons **Open Dashboard** / **How it works**
-- Right: **PipelineScene** animation (spec below)
+Five sections, no labels or counters. Smooth scroll (Lenis) on this page only.
 
-**Below the hero:** four scroll sections, one per stage. The illustration alternates left/right, with 1–2 lines of description on the other side, revealed on scroll.
-**Footer:** team names, college, year.
+1. **(A) Hero**, full screen: a WebGL bundle of glowing fibre strands (= log streams) sweeps in from the top-left and it flows behind the centred copy (dimmed there for legibility) and ends in a wide band of glowing tips around the buttons; light beads travel along them (= log events); every few seconds one bead is coral (= a threat). The cursor bends the fibres. One centred block, slightly below the middle: a huge soft-white (`#F4F7F2`) **DRISHTI**, "The AI that fights back." (sage-white), "Watches every log. Acts when sure. Asks when not." (muted), then **Open dashboard** / **How it works** (stacked on mobile). A soft radial dark fade sits behind the text. Slim top bar: logo + DRISHTI left, a "Dashboard ↗" pill right; transparent over the hero, `bg/90` + hairline border once past it.
+2. **(B) The eye**, pinned: scrolling makes the strands converge, their tips forming the pupil rim and the strands becoming radial iris fibres (beads now flow into the pupil). A ring of outlined spokes fades in, scans, and locks the spoke facing the coral bead (it turns coral). Headline left over the iris edge: **LEARN *to see* THREATS FIRST**; counter right; one quiet line bottom-left.
+3. **(C) How it works**, pinned: centred headline "HOW IT *works*" + "Four agents, one watch." Four big agent cards (stage label, glyph + name, 2–3 lines, one mono example line: `203.0.113.7 · 47 failed SSH logins in 60s` → `T1110 · Brute Force` → `Confidence 92%` → `IP blocked · logged`) in a 2×2 grid beside a smaller, frameless Watching Railway (below). Scroll scrubs the railway; the active card pops (scale, lift, lime border and glow; inactive cards sage) while the others dim. A toggle replays the human-approval route (64%). Mobile: railway on top, the active card + stage dots below. Reduced motion: static railway, all cards.
+4. **(D) Why local**: "NOTHING *leaves* THE ROOM". An SVG diagram: a dashed "your network" room with logs (ssh/web/firewall) flowing to Drishti and on to Ollama + Llama 3.2, PostgreSQL and ChromaDB; outside, a faded crossed-out cloud ("External AI APIs"). Below it, four cards: Privacy, Control, On-prem, Cost.
+5. **(E) Footer + CTA**: "READY *to* WATCH?" + Open dashboard; footer with logo and BE IT · SPPU · 2026–27.
+
+Implementation (`features/landing/eye/`): one shader function `strandPos()` blends each strand's bundle and iris layouts by scroll progress; ribbons, tips, beads and the threat bead all use it. three.js + react-three-fiber, lazy-loaded after first paint, paused off-screen, 160 strands (70 on mobile, no halo pass, DPR 1). Reduced motion or no WebGL: still images (`public/landing/hero.webp`, `iris.webp`) rendered from the scene itself via `?still=hero|eye` (dev). `?fps` (dev) shows a frame-rate meter.
 
 #### PipelineScene: "The Watching Railway" (11 s loop, SVG, `components/animation/pipeline/`)
 A toy railway seen from above. Log carriages circle a track loop around one large eye on a signal tower.
-1. **Watcher:** the eye idly follows carriages, then one carriage blushes **neon rose**. The pupil tightens, the iris fibres turn, and a dotted line of sight locks onto it.
+1. **Watcher:** the eye idly follows carriages, then one carriage blushes **coral**. The pupil tightens, the iris fibres turn, and a dotted line of sight locks onto it.
 2. **Detective:** a round bird with a loupe flies from its perch, rides the rogue carriage, and a `T1110` tag pops up.
 3. **Confidence Gate:** a ring dial fills to **92** (green), and the track switch throws so the rogue rolls onto a spur.
-4. **Bouncer:** a stern buffer stop with a spring. The carriage hits it, bounces, shakes and dissolves into rose sparks. The eye blinks.
+4. **Bouncer:** a stern buffer stop with a spring. The carriage hits it, bounces, shakes and dissolves into coral sparks. The eye blinks.
 5. **Every 3rd loop:** the dial stops at **64** (amber). The carriage halts at a platform, the dozing analyst wakes and approves with a check, and only then does it roll on to the Bouncer.
 The scene is a pure function of loop time (`timeline.ts`). Reduced motion shows a single still frame. In dev, `?t=6.3&loop=2` freezes any frame.
 
@@ -349,9 +356,9 @@ The frontend `types/` must mirror these schemas exactly.
 - [x] Color tokens + fonts + background glow/grid
 - [x] Layout primitives (PageShell, Sidebar, Topbar)
 - [x] **PipelineScene** hero animation (section 6.1 spec)
-- [ ] Four agent scroll sections (alternating left/right)
-- [ ] Footer
-- [ ] Reduced-motion + mobile check
+- [x] Four agent sections (now merged into How it works as four scroll-driven cards, see 6.1)
+- [x] Footer
+- [x] Reduced-motion + mobile check
 
 ### Phase 2 — Dashboard UI on mock data
 - [x] `types/` for Log, Alert, Incident, Action, Approval, Stats
@@ -496,3 +503,9 @@ Larger local models · more knowledge sources (CVE, threat intel feeds) · advan
 | 2026-10-22 | 0 | Monorepo skeleton: frontend (Vite/Tailwind v4/shadcn/Router), backend (/health), compose, docs, CLAUDE.md |
 | 2026-10-22 | 1 | Hero + PipelineScene ("Watching Railway": Iris eye + toy railway), glow token, MotionConfig reduced motion |
 | 2026-10-22 | 2 | Dashboard UI on mock data: types, seeded mocks for all scenarios, app shell, 7 pages, live mock event stream |
+| 2026-10-22 | 1 (v2) | Landing v2 part A: "Obsidian Iris" palette + Unbounded/Instrument Serif/Inter everywhere; WebGL hero fibres → Watcher iris scroll transition |
+| 2026-10-23 | 1 (v2) | Landing v2 part B: scroll-scrubbed How it works (sure/unsure toggle), Four agents, Why local, CTA + footer; section counters dropped |
+| 2026-10-23 | 1 (v2) | Landing v2 part C: How it works as 4 agent cards that pop in sync with a smaller frameless railway (Four agents section merged in); Why local as a "room" diagram + 4 cards; team names out of footer; cerulean ink (#007BA7/#1A9BD0) + rose #FF2D95 accents across landing and dashboard; glow removed from headings, chips removed from cards |
+| 2026-10-23 | 1 (v2) | Hero centred (rose DRISHTI, cerulean tagline, buttons below), fibre tips re-aimed above the title, Sight label removed, slim top bar with Dashboard pill |
+| 2026-10-23 | 1 (v2) | "Acid Moss" palette across landing + dashboard: lime identity/actions, sage borders/inactive, coral threats, sage-white accents; stills re-rendered |
+| 2026-10-23 | 1 (v2) | Coral #FF5A4E as a sparing text accent: headline italic words, stage labels, key example values |

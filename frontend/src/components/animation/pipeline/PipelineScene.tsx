@@ -3,16 +3,18 @@ import { Analyst, Bird, Bouncer, Perch, WatcherEye } from './Characters'
 import { Burst, Carriage, Dial, Platform, Rails, Switch, Tag } from './Rail'
 import { HUMAN_EVERY, LOOP_SECONDS, STILL_FRAME, sceneAt } from './timeline'
 import { BUFFER, EYE, VIEWBOX } from './track'
-import { useLoopClock } from './useLoopClock'
+import { useLoopClock, type LoopClock } from './useLoopClock'
 
 /**
  * Hero animation. A toy railway of log carriages watched by an eye:
  * Watcher spots the rogue, Detective rides it, the Gate throws the switch,
  * Bouncer stops it. Every third loop the gate is unsure and a human approves.
+ * Pass `clock` to drive it from outside (e.g. scroll) instead of its own loop.
  */
-export function PipelineScene({ className }: { className?: string }) {
+export function PipelineScene({ className, clock }: { className?: string; clock?: LoopClock }) {
   const ref = useRef<SVGSVGElement>(null)
-  const { t, loop } = useLoopClock(ref, LOOP_SECONDS, STILL_FRAME)
+  const own = useLoopClock(ref, LOOP_SECONDS, STILL_FRAME, !!clock)
+  const { t, loop } = clock ?? own
   const s = sceneAt(t, loop % HUMAN_EVERY === HUMAN_EVERY - 1)
 
   return (
@@ -34,7 +36,7 @@ export function PipelineScene({ className }: { className?: string }) {
         y1={EYE.y}
         x2={s.sight.x}
         y2={s.sight.y}
-        className="stroke-primary-glow"
+        className="stroke-primary-light"
         strokeWidth={1}
         strokeDasharray="2 4"
         strokeLinecap="round"

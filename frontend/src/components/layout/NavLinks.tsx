@@ -35,8 +35,8 @@ export function NavLinks({ rail = false, onNavigate }: { rail?: boolean; onNavig
           >
             {({ isActive }) => (
               <>
-                {isActive && <span className="absolute inset-y-2.5 left-0 w-0.5 rounded-full bg-primary-glow" />}
-                <Icon className={cn('size-[18px] shrink-0', isActive && 'text-primary-glow')} />
+                {isActive && <span className="absolute inset-y-2.5 left-0 w-0.5 rounded-full bg-primary" />}
+                <Icon className={cn('size-[18px] shrink-0', isActive && 'text-primary')} />
                 <span className={cn(rail && 'md:hidden lg:inline')}>{label}</span>
                 {badge && pending > 0 && (
                   <span

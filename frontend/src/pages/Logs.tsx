@@ -30,7 +30,7 @@ export default function Logs() {
 
   // Live tail: new matching lines go on top and glow briefly. Off = the list holds still for reading.
   useLiveEvent((e) => {
-    if (e.type === 'alert') void qc.invalidateQueries({ queryKey: qk.logs(query) }) // pick up the rose markers
+    if (e.type === 'alert') void qc.invalidateQueries({ queryKey: qk.logs(query) }) // pick up the coral markers
     if (e.type !== 'log') return
     const l = e.data
     if (query.source && l.source !== query.source) return
