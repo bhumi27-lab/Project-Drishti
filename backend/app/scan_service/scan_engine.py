@@ -1,9 +1,35 @@
 import os
 import sys
+import re
 from pathlib import Path
+from datetime import datetime
 import xml.etree.ElementTree as ET
 from sigma.rule import SigmaRule
 from sigma_rule_matcher import RuleMatcher
+
+def categorize_mitre_tags(tags):
+    """
+    Categorizes raw Sigma rule tags into distinct ATT&CK taxonomies.
+    """
+    attack_tactics = set()
+    attack_techniques = set()
+    attack_software = set()
+    
+    technique_pattern = re.compile(r"^T\d{4}(\.\d{3})?$", re.IGNORECASE)
+    software_pattern = re.compile(r"^[SG]\d{4}$", re.IGNORECASE)
+    
+    for tag in tags:
+        tag_str = str(tag)
+        clean_tag = tag_str.replace("attack.", "").replace("_", "-").lower()
+        
+        if technique_pattern.match(tag_str):
+            attack_techniques.add(tag_str.upper())
+        elif software_pattern.match(tag_str):
+            attack_software.add(tag_str.upper())
+        else:
+            attack_tactics.add(clean_tag)
+            
+    return list(attack_tactics), list(attack_techniques), list(attack_software)
 
 class SigmaScanEngine:
     def __init__(self, rules_dir, logs_dir):
@@ -82,12 +108,16 @@ class SigmaScanEngine:
                             else:
                                 tag_strings.append(str(tag))
 
+                    tactics, techniques, software = categorize_mitre_tags(tag_strings)
+
                     self.matchers.append({
                         "filename": rule_file.name,
                         "title": sigma_rule.title,
                         "id": str(sigma_rule.id) if sigma_rule.id else "N/A",
                         "level": str(sigma_rule.level),
-                        "tags": tag_strings,
+                        "attack_tactics": tactics,
+                        "attack_techniques": techniques,
+                        "attack_software": software,
                         "matcher": matcher
                     })
             except Exception:
@@ -96,7 +126,7 @@ class SigmaScanEngine:
     def group_into_campaigns(self, incidents, rules_dict):
         """
         Level 2 Correlation: Groups incidents into enriched Attack Campaigns (Cases)
-        keyed by target host, calculating max severity, associated tactics, and timeline window.
+        keyed by target host, calculating max severity, separated ATT&CK taxonomies, and timeline window.
         """
         severity_rank = {"low": 1, "medium": 2, "high": 3, "critical": 4}
         campaigns = {}
@@ -106,7 +136,10 @@ class SigmaScanEngine:
             rule_id = inc["rule_id"]
             rule_info = rules_dict.get(rule_id, {})
             severity = rule_info.get("severity", "low").lower()
-            tags = rule_info.get("mitre_tags", [])
+            
+            tactics = rule_info.get("attack_tactics", [])
+            techniques = rule_info.get("attack_techniques", [])
+            software = rule_info.get("attack_software", [])
             
             first_seen = inc["first_seen"]
             last_seen = inc["last_seen"]
@@ -116,7 +149,9 @@ class SigmaScanEngine:
                     "case_id": f"CASE-{computer.split('.')[0].upper()}",
                     "target_host": computer,
                     "max_severity": severity,
-                    "associated_tactics": set(tags),
+                    "attack_tactics": set(tactics),
+                    "attack_techniques": set(techniques),
+                    "attack_software": set(software),
                     "campaign_window": {
                         "first_seen": first_seen,
                         "last_seen": last_seen
@@ -129,24 +164,26 @@ class SigmaScanEngine:
             camp["total_incidents"] += 1
             camp["incident_ids"].append(inc["incident_id"])
             
-            # Update max severity if this incident has higher priority
             current_max_sev = camp["max_severity"].lower()
             if severity_rank.get(severity, 1) > severity_rank.get(current_max_sev, 1):
                 camp["max_severity"] = severity
             
-            # Aggregate MITRE tags
-            for tag in tags:
-                camp["associated_tactics"].add(tag)
+            for t in tactics:
+                camp["attack_tactics"].add(t)
+            for tech in techniques:
+                camp["attack_techniques"].add(tech)
+            for sw in software:
+                camp["attack_software"].add(sw)
                 
-            # Expand campaign window if necessary
             if first_seen != "N/A" and (camp["campaign_window"]["first_seen"] == "N/A" or first_seen < camp["campaign_window"]["first_seen"]):
                 camp["campaign_window"]["first_seen"] = first_seen
             if last_seen != "N/A" and (camp["campaign_window"]["last_seen"] == "N/A" or last_seen > camp["campaign_window"]["last_seen"]):
                 camp["campaign_window"]["last_seen"] = last_seen
 
-        # Convert sets to lists for JSON serialization
         for host, camp in campaigns.items():
-            camp["associated_tactics"] = list(camp["associated_tactics"])
+            camp["attack_tactics"] = list(camp["attack_tactics"])
+            camp["attack_techniques"] = list(camp["attack_techniques"])
+            camp["attack_software"] = list(camp["attack_software"])
             
         return list(campaigns.values())
 
@@ -195,13 +232,14 @@ class SigmaScanEngine:
                                 "rule_id": item["id"],
                                 "rule_title": item["title"],
                                 "severity": item["level"],
-                                "mitre_tags": item["tags"],
+                                "attack_tactics": item["attack_tactics"],
+                                "attack_techniques": item["attack_techniques"],
+                                "attack_software": item["attack_software"],
                                 "computer": computer,
                                 "source_image": source_image,
                                 "target_image": target_image,
                                 "occurrence_count": 0,
-                                "first_seen": timestamp,
-                                "last_seen": timestamp,
+                                "_timestamps": [],
                                 "granted_access_values": set(),
                                 "event_ids": set(),
                                 "timeline_snippets": []
@@ -209,7 +247,8 @@ class SigmaScanEngine:
                         
                         incident = incident_map[group_key]
                         incident["occurrence_count"] += 1
-                        incident["last_seen"] = timestamp
+                        if timestamp != 'N/A':
+                            incident["_timestamps"].append(timestamp)
                         incident["event_ids"].add(event_id)
                         if granted_access != 'N/A':
                             incident["granted_access_values"].add(granted_access)
@@ -220,7 +259,6 @@ class SigmaScanEngine:
                 except Exception:
                     continue
 
-        # Build rule-centric hierarchy and flat incident list for campaign analysis
         rules_dict = {}
         all_incidents_flat = []
 
@@ -230,6 +268,20 @@ class SigmaScanEngine:
             data["granted_access_values"] = list(data["granted_access_values"])
             data["event_ids"] = list(data["event_ids"])
             
+            ts_list = data.pop("_timestamps", [])
+            valid_ts = [ts for ts in ts_list if ts != 'N/A']
+            if valid_ts:
+                try:
+                    parsed_ts = [datetime.fromisoformat(ts.replace('Z', '+00:00')) for ts in valid_ts]
+                    data["first_seen"] = min(parsed_ts).isoformat()
+                    data["last_seen"] = max(parsed_ts).isoformat()
+                except Exception:
+                    data["first_seen"] = min(valid_ts)
+                    data["last_seen"] = max(valid_ts)
+            else:
+                data["first_seen"] = 'N/A'
+                data["last_seen"] = 'N/A'
+            
             all_incidents_flat.append(data)
             
             rule_id = data["rule_id"]
@@ -238,34 +290,36 @@ class SigmaScanEngine:
                     "rule_id": rule_id,
                     "rule_title": data["rule_title"],
                     "severity": data["severity"],
-                    "mitre_tags": data["mitre_tags"],
+                    "attack_tactics": data["attack_tactics"],
+                    "attack_techniques": data["attack_techniques"],
+                    "attack_software": data["attack_software"],
                     "incidents": []
                 }
             
-            # Clean incident payload without repeating parent rule metadata
             clean_incident = {
                 "incident_id": inc_id,
-                "rule_id": rule_id, # kept internally for campaign correlation reference
+                "rule_id": rule_id,
                 "computer": data["computer"],
                 "source_image": data["source_image"],
                 "target_image": data["target_image"],
                 "occurrence_count": data["occurrence_count"],
                 "first_seen": data["first_seen"],
                 "last_seen": data["last_seen"],
+                "attack_tactics": data["attack_tactics"],
+                "attack_techniques": data["attack_techniques"],
+                "attack_software": data["attack_software"],
                 "granted_access_values": data["granted_access_values"],
                 "event_ids": data["event_ids"],
                 "timeline_snippets": data["timeline_snippets"]
             }
             rules_dict[rule_id]["incidents"].append(clean_incident)
 
-        # Generate enriched campaigns
         campaigns = self.group_into_campaigns(all_incidents_flat, rules_dict)
 
-        # Remove temporary internal rule_id reference from the final rule-centric output if desired, or keep it
         rules_triggered = list(rules_dict.values())
         for r in rules_triggered:
             for inc in r["incidents"]:
-                inc.pop("rule_id", None) # Clean up internal helper key
+                inc.pop("rule_id", None)
 
         return {
             "status": "success",
